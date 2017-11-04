@@ -1,0 +1,291 @@
+EnableExplicit
+
+XIncludeFile "Leaflet.sbi"
+
+Enumeration
+  #Window
+  #Gadget
+EndEnumeration
+
+; Procedure LeafletMapClickEvent(e)
+; 	
+; 	Define Lat, Lng, Zoom
+; 	Define TileUrl.s
+; 	
+; 	! Lat = e.latlng.lat;
+; 	! Lng = e.latlng.lng;
+; 	
+; 	Debug "Lat: " + Str(Lat) + ", Lng: " + Str(Lng)
+; 	
+; 	Zoom = GetGadgetAttribute(#myLeafletGadget, #LeafletZoom)
+; 	
+; 	! TileUrl = GetTileURL(e.latlng.lat, e.latlng.lng, Zoom);
+; 	
+; 	Debug "TileUrl: " + TileUrl
+; 	
+; 	Debug "-----------------------------"
+; 	
+; EndProcedure
+; 
+Procedure LeafletMapEvent(e)
+  
+  UseModule Leaflet
+    
+    Select EventType()
+      Case #EventType_ZoomLevelsChange : Debug "#EventType_ZoomLevelsChange"
+      Case #EventType_Resize           : Debug "#EventType_Resize"
+      Case #EventType_Unload           : Debug "#EventType_Unload"
+      Case #EventType_ViewReset        : Debug "#EventType_ViewReset"
+      Case #EventType_Load             : Debug "#EventType_Load"
+      Case #EventType_ZoomStart        : Debug "#EventType_ZoomStart"
+      Case #EventType_MoveStart        : Debug "#EventType_MoveStart"
+      Case #EventType_Zoom             : Debug "#EventType_Zoom"
+      Case #EventType_Move             : Debug "#EventType_Move"
+      Case #EventType_ZoomEnd          : Debug "#EventType_ZoomEnd"
+      Case #EventType_MoveEnd          : Debug "#EventType_MoveEnd"
+      Case #EventType_Click            : Debug "#EventType_Click"
+      Case #EventType_DblClick         : Debug "#EventType_DblClick"
+      Case #EventType_MouseDown        : Debug "#EventType_MouseDown"
+      Case #EventType_MouseUp          : Debug "#EventType_MouseUp"
+      Case #EventType_MouseOver        : Debug "#EventType_MouseOver"
+      Case #EventType_MouseOut         : Debug "#EventType_MouseOut"
+      Case #EventType_MouseMove        : ; Debug "#EventType_MouseMove"
+      Case #EventType_ContextMenu      : Debug "#EventType_ContextMenu"
+      Case #EventType_KeyPress         : Debug "#EventType_KeyPress"
+      Case #EventType_PreClick         : Debug "#EventType_PreClick"
+      Default                          : Debug "Unknown LeafletMapEvent"
+    EndSelect
+    
+  UnuseModule Leaflet
+  
+EndProcedure
+
+Procedure myMarkerEvent()
+  
+  Debug EventType()
+  
+EndProcedure
+
+Procedure AddMarker()
+EndProcedure
+
+Procedure AddCircle(LayerGroup)
+  
+  Protected myCircle
+  
+  myCircle = Leaflet::NewCircle()
+  Leaflet::SetAttribute(myCircle, Leaflet::#Radius, 1500)
+  Leaflet::SetAttribute(myCircle, Leaflet::#LatLng, Leaflet::LatLng( 51.46, -0.19 ))
+  
+  Leaflet::SetStringAttribute(myCircle, Leaflet::#Tooltip, "I am a Circle.")
+  
+  Leaflet::AddItem(LayerGroup, myCircle)
+  
+EndProcedure  
+
+Procedure AddRectangle(LayerGroup)
+  
+  Protected myRectangle
+  
+  Protected Corner1      = Leaflet::LatLng( 51.5027589576403,  -0.020599365234375003 )
+  Protected Corner2      = Leaflet::LatLng( 51.444592621121764, 0.10711669921875001 )
+  Protected LatLngBounds = Leaflet::LatLngBounds(Corner1, Corner2)
+  
+  myRectangle = Leaflet::NewRectangle()
+  
+  Leaflet::SetAttribute(myRectangle, Leaflet::#Bounds, LatLngBounds)
+  
+  Leaflet::SetStringAttribute(myRectangle, Leaflet::#Tooltip, "I am a rectangle")
+  
+  Leaflet::AddItem(LayerGroup, myRectangle)
+  
+EndProcedure
+
+Procedure AddPolygon(LayerGroup)
+  
+  Protected LatLngs
+  
+  ! v_latlngs = [
+  !               [51.60437164681676,  -0.358428955078125],
+  !               [51.66318599532148,  -0.28289794921875006],
+  !               [51.63250976332741,  -0.212860107421875],
+  !               [51.600959780448626, -0.10574340820312501],
+  !               [51.55572834577052,  -0.14831542968750003],
+  !               [51.520707104039275, -0.22933959960937503],
+  !               [51.513870548723986, -0.341949462890625],
+  !               [51.572802100290254, -0.37078857421875]
+  !             ];
+  
+  Protected myPolygon
+  
+  myPolygon = Leaflet::NewPolygon()
+  
+  Leaflet::SetAttribute(myPolygon, Leaflet::#LatLngs, LatLngs) ; #LatLngs!
+  
+  Leaflet::SetStringAttribute(myPolygon, Leaflet::#Tooltip, "I am a Polygon.")
+  
+  Leaflet::AddItem(LayerGroup, myPolygon)
+  
+EndProcedure
+
+Procedure AddPolyline(myMap, LayerGroup)
+  
+  Protected LatLngs
+  
+  ! v_latlngs = [
+  !  [45.51, -122.68],
+  !  [37.77, -122.43],
+  !  [34.04, -118.2]
+  ! ];
+  
+  Protected myPolyline
+  
+  myPolyline = Leaflet::NewPolyline()
+  
+  Leaflet::SetAttribute(myPolyline, Leaflet::#LatLngs, LatLngs) ; #LatLngs!
+  
+  Leaflet::SetStringAttribute(myPolyline, Leaflet::#Tooltip, "I am a Polyline.")
+  
+  Leaflet::AddItem(LayerGroup, myPolyline)
+  
+  Leaflet::SetAttribute(myMap, Leaflet::#FitBounds, Leaflet::GetAttribute(myPolyline, Leaflet::#Bounds))
+  
+EndProcedure
+
+Procedure JsonParse(String.s, ReplaceQuotes = #True)
+  If ReplaceQuotes
+    String = ReplaceString(String, "'", Chr(34))
+  EndIf
+  ! return JSON.parse(v_string);
+EndProcedure
+
+Procedure Test1(myMap, myLayerGroup)
+  
+  Protected myPolyline
+  myPolyline = Leaflet::NewPolyline(JsonParse("[[45.51, -122.68],[37.77, -122.43],[34.04, -118.2]]"), JsonParse(" { 'color': '#FF0000' } "))
+  Leaflet::AddItem(myLayerGroup, myPolyline)
+  Leaflet::SetAttribute(myMap, Leaflet::#FitBounds, Leaflet::GetAttribute(myPolyline, Leaflet::#Bounds))
+  
+  ; ---
+  
+  Protected myCircle
+  myCircle = Leaflet::NewCircle(Leaflet::LatLng( 37.77, -122.43 ), JsonParse(" { 'color': '#0000FF', 'radius': 2000, 'width': 3 } "))
+  Leaflet::AddItem(myLayerGroup, myCircle)
+  Leaflet::SetAttribute(myMap, Leaflet::#FitBounds, Leaflet::GetAttribute(myCircle, Leaflet::#Bounds))
+  
+EndProcedure
+
+Procedure Test2(myMap, myLayerGroup)
+  
+  ; myCircle = NewCircleMarker();
+  ; 
+  ; SetAttribute(myCircle, #FillColor, RGB(0,0,255))
+  ; SetAttribute(myCircle, #Color,     RGB(0,0,0))
+  ; SetAttribute(myCircle, #Radius, 5)
+  ; SetAttribute(myCircle, #Weight, 1)
+  ; SetAttribute(myCircle, #FillOpacity, 1)
+  ; 
+  ; ; ... Tooltip setzen:
+  ; SetStringAttribute(myCircle, #Tooltip, Brunnen()\Ident)
+  ; 
+  ; ; ... Popup setzen:
+  ; SetStringAttribute(myCircle, #Popup, Brunnen()\DisplayName)
+  ; 
+  ; ; ... Position setzen:
+  ; SetAttribute(myCircle, #LatLng, LatLng(Brunnen()\GeoPosLatitude, Brunnen()\GeoPosLongitude))
+  ; 
+  ; ; ... und den Circle der FeatureGroup hinzufügen:
+  ; AddItem(myFeatureGroup, myCircle)
+  ; 
+  ; BindItemEvent(myCircle, @MarkerEvent(), #EventType_Click)
+  
+  
+  
+  ; Marker1
+  
+  Define myMarker
+  Define myMarkerOptions
+  ;   
+  ; ; icon	Icon	*	Icon class to use for rendering the marker. See Icon documentation for details on how to customize the marker icon. If not specified, a new L.Icon.Default is used.
+  ; ; draggable	Boolean	false	Whether the marker is draggable with mouse/touch or not.
+  ; ; keyboard	Boolean	true	Whether the marker can be tabbed to with a keyboard and clicked by pressing enter.
+  ; ; title	String	''	Text for the browser tooltip that appear on marker hover (no tooltip by default).
+  ; ; alt	String	''	Text for the alt attribute of the icon image (useful for accessibility).
+  ; ; zIndexOffset	Number	0	By default, marker images zIndex is set automatically based on its latitude. Use this option if you want to put the marker on top of all others (or below), specifying a high value like 1000 (or high negative value, respectively).
+  ; ; opacity	Number	1.0	The opacity of the marker.
+  ; ; riseOnHover	Boolean	false	If true, the marker will get on top of others when you hover the mouse over it.
+  ; ; riseOffset	Number	250	The z-index offset used for the riseOnHover feature.
+  ; ; pane	String	'markerPane'	Map pane where the markers icon will be added.  
+  ;   
+  
+  myMarker = Leaflet::NewMarker(Leaflet::LatLng( 51.50, -0.09 ), JsonParse(" { 'draggable': true } "))
+  
+  Leaflet::SetStringAttribute(myMarker, Leaflet::#Tooltip, "Hallo")
+  
+  Leaflet::SetStringAttribute(myMarker, Leaflet::#Popup, "Marker1-Popup<br />kann auch HTML: <i class='fa fa-smile-o fa-3x'></i>")
+  
+  Leaflet::AddItem(myLayerGroup, myMarker)
+  
+  ; Leaflet::BindMarkerEvent(#Gadget, myMarker, @myMarkerEvent())
+  
+  
+  ; Marker2
+  
+  myMarker = Leaflet::NewMarker()
+  
+  Leaflet::SetAttribute(myMarker, Leaflet::#LatLng, Leaflet::LatLng( 51.43, -0.09 ))
+  
+  Leaflet::AddItem(myLayerGroup, myMarker)
+  
+  Leaflet::SetStringAttribute(myMarker, Leaflet::#Tooltip, "Welt")
+  
+  ; AddCircle(myLayerGroup)
+  ; AddRectangle(myLayerGroup)  
+  ; AddPolygon(myLayerGroup)
+  ; AddPolyline(myMap, myLayerGroup)
+  
+  ; ; LeafletClearLayers(myLayerGroup)
+  
+  
+EndProcedure
+
+Procedure Main()
+  
+  OpenWindow(#Window, #PB_Ignore, #PB_Ignore, 900, 900, "LeafletGadgetDemo", #PB_Window_ScreenCentered | #PB_Window_SizeGadget)
+  
+  ContainerGadget(#Gadget, 0, 0, WindowWidth(#Window), WindowHeight(#Window)) : CloseGadgetList()
+  
+  Leaflet::BindGadget(#Gadget)
+  
+  Protected myMap = Leaflet::GetMap(#Gadget)
+  
+  ; einen TileLayer erstellen
+  Protected TileLayer = Leaflet::NewTileLayer(Leaflet::#TileLayerType_OpenStreetMap) ; in dem Zusammenhang interessant zu lesen: http://build-failed.blogspot.de/2012/11/zoomable-image-with-leaflet.html
+  
+  Leaflet::AddItem(myMap, TileLayer)
+  
+  ; nun auf eine bestimmte Koordinate zentrieren
+  Leaflet::PanTo(myMap, Leaflet::LatLng( 51.505, -0.09 ) )
+  
+  ; und einen Zoom einstellen
+  Leaflet::SetAttribute(myMap, Leaflet::#Zoom, 10)
+  
+  ; ------------
+  
+  Define myLayerGroup
+  
+  myLayerGroup = Leaflet::NewLayerGroup()
+  
+  ; Jetzt die LayerGroup der Map hinzufügen:
+  Leaflet::AddItem(myMap, myLayerGroup)
+  
+  ; Tests...
+  
+  ; Test1(myMap, myLayerGroup)
+  
+  Test2(myMap, myLayerGroup)
+  
+EndProcedure
+
+Leaflet::Init(@Main())
+
