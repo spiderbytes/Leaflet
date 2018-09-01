@@ -1,0 +1,38 @@
+EnableExplicit
+
+XIncludeFile "Leaflet.sbi"
+
+Enumeration
+  #Window
+  #LeafletGadget
+EndEnumeration
+
+Procedure Main()
+  
+  OpenWindow(#Window, #PB_Ignore, #PB_Ignore, 900, 900, "LeafletGadgetDemo", #PB_Window_ScreenCentered | #PB_Window_SizeGadget)
+  
+  ContainerGadget(#LeafletGadget, 0, 0, WindowWidth(#Window), WindowHeight(#Window)) : CloseGadgetList()
+  
+  Leaflet::BindGadget(#LeafletGadget)
+  
+  Protected myMap = Leaflet::GetMap(#LeafletGadget)
+  
+  ; create a tilelayer
+  
+  Protected Layer1 = Leaflet::NewTileLayer(Leaflet::#TileLayerType_GoogleMapHybrid)
+  Protected Layer2 = Leaflet::NewTileLayer(Leaflet::#TileLayerType_GoogleMapRoadmap)
+  Protected Layer3 = Leaflet::NewTileLayer(Leaflet::#TileLayerType_GoogleMapSatellite)
+  Protected Layer4 = Leaflet::NewTileLayer(Leaflet::#TileLayerType_GoogleMapTerrain)
+  
+  ! L.control.layers(v_layer1, v_layer2, v_layer3, v_layer4).addTo(v_mymap);
+  
+  ; center to a specific position
+  Leaflet::PanTo(myMap, Leaflet::LatLng( 51.43, -0.09 ) )
+  
+  ; adjust the zoom
+  Leaflet::SetAttribute(myMap, Leaflet::#Zoom, 10)
+  
+EndProcedure
+
+Leaflet::Init(@Main())
+
