@@ -97,15 +97,15 @@ Procedure AddPolygon(LayerGroup)
   Protected LatLngs
   
   ! v_latlngs = [
-  !               [51.60437164681676,  -0.358428955078125],
-  !               [51.66318599532148,  -0.28289794921875006],
-  !               [51.63250976332741,  -0.212860107421875],
-  !               [51.600959780448626, -0.10574340820312501],
-  !               [51.55572834577052,  -0.14831542968750003],
-  !               [51.520707104039275, -0.22933959960937503],
-  !               [51.513870548723986, -0.341949462890625],
-  !               [51.572802100290254, -0.37078857421875]
-  !             ];
+  !   [51.60437164681676,  -0.358428955078125],
+  !   [51.66318599532148,  -0.28289794921875006],
+  !   [51.63250976332741,  -0.212860107421875],
+  !   [51.600959780448626, -0.10574340820312501],
+  !   [51.55572834577052,  -0.14831542968750003],
+  !   [51.520707104039275, -0.22933959960937503],
+  !   [51.513870548723986, -0.341949462890625],
+  !   [51.572802100290254, -0.37078857421875]
+  ! ];
   
   Protected myPolygon
   
@@ -124,9 +124,9 @@ Procedure AddPolyline(myMap, LayerGroup)
   Protected LatLngs
   
   ! v_latlngs = [
-  !   [51.604,  -0.359],
-  !   [51.664,  -0.289],
-  !   [51.634,  -0.219]
+  !   [51.504,  -0.140],
+  !   [51.564,  -0.070],
+  !   [51.534,  -0.000]
   ! ];
   
   Protected myPolyline
@@ -139,8 +139,6 @@ Procedure AddPolyline(myMap, LayerGroup)
   
   Leaflet::AddItem(LayerGroup, myPolyline)
   
-  Leaflet::SetAttribute(myMap, Leaflet::#FitBounds, Leaflet::GetAttribute(myPolyline, Leaflet::#Bounds))
-  
 EndProcedure
 
 Procedure JsonParse(String.s, ReplaceQuotes = #True)
@@ -152,33 +150,34 @@ EndProcedure
 
 Procedure Main()
   
-  OpenWindow(#Window, #PB_Ignore, #PB_Ignore, 900, 900, "LeafletGadgetDemo", #PB_Window_ScreenCentered | #PB_Window_SizeGadget)
+  OpenWindow(#Window, #PB_Ignore, #PB_Ignore, 500, 500, "LeafletGadgetDemo", #PB_Window_ScreenCentered | #PB_Window_SizeGadget)
   
   ContainerGadget(#Gadget, 0, 0, WindowWidth(#Window), WindowHeight(#Window)) : CloseGadgetList()
   
-  Leaflet::BindGadget(#Gadget)
+  Leaflet::BindGadget(#Gadget, JsonParse("{ 'zoom': 10 }"))
   
   Protected myMap = Leaflet::GetMap(#Gadget)
   
-  ; einen TileLayer erstellen
-  Protected TileLayer = Leaflet::NewTileLayer(Leaflet::#TileLayerType_OpenStreetMap) ; in dem Zusammenhang interessant zu lesen: http://build-failed.blogspot.de/2012/11/zoomable-image-with-leaflet.html
-  
-  Leaflet::AddItem(myMap, TileLayer)
-  
-  ; nun auf eine bestimmte Koordinate zentrieren
+  ; center to a specific coodinate:
   Leaflet::PanTo(myMap, Leaflet::LatLng( 51.505, -0.09 ) )
-  
-  ; und einen Zoom einstellen
-  Leaflet::SetAttribute(myMap, Leaflet::#Zoom, 10)
   
   ; ------------
   
-  Define myLayerGroup
+  ; create a TileLayer:
+  Protected TileLayer = Leaflet::NewTileLayer(Leaflet::#TileLayerType_OpenStreetMap) ; interesting to read in this context: http://build-failed.blogspot.de/2012/11/zoomable-image-with-leaflet.html
   
-  myLayerGroup = Leaflet::NewLayerGroup()
+  ; and add it to the Map:
+  Leaflet::AddItem(myMap, TileLayer)
   
-  ; Jetzt die LayerGroup der Map hinzufügen:
+  ; ------------
+  
+  ; create a LayerGroup
+  Protected myLayerGroup= Leaflet::NewLayerGroup()
+  
+  ; and add it to the Map:
   Leaflet::AddItem(myMap, myLayerGroup)
+  
+  ; ------------
   
   ; Tests...
   

@@ -117,7 +117,7 @@ DeclareModule Leaflet
   
   Declare Init(Callback)
   
-  Declare BindGadget(Gadget)
+  Declare BindGadget(Gadget, Options = #PB_Ignore)
   
   Declare GetMap(Gadget)
   Declare RedrawMap(Gadget)
@@ -196,7 +196,7 @@ Module Leaflet
     
   EndProcedure
   
-  Procedure BindGadget(Gadget)
+  Procedure BindGadget(Gadget, Options = #PB_Ignore)
     
     If GadgetType(Gadget) = #PB_GadgetType_Container
       
@@ -209,7 +209,11 @@ Module Leaflet
       !   dijitContentPane.empty();
       ! }
       
-      !	map = L.map(dijitContentPane[0]).setView([0, 0], 1);
+      If Options = #PB_Ignore
+        ! v_options = { center: [0, 0], zoom: 1 };
+      EndIf
+      
+      ! map = L.map(dijitContentPane[0], v_options);
       
       ! spider.DojoAspect.after(dijit.byId(spider_GadgetID(v_gadget).gadget.id), "resize", function() {
       !   map.invalidateSize();
@@ -251,9 +255,6 @@ Module Leaflet
         Else
           ! v_o.bindTooltip(v_value);
         EndIf
-        
-        ; ! v_o.setTooltipContent(v_v_value);
-        ; ! return v_o.getTooltip();        
         
       Case #IconUrl
         ! v_o.options.iconUrl = v_value;
@@ -356,8 +357,7 @@ Module Leaflet
         ! v_o.setStyle( { fillColor : spider_helper_ColorToHtml(v_value) } );
         
       Case #Zoom
-        CallDebugger
-        !	v_o.setZoom(v_value);
+        ! v_o.setZoom(v_value);
         
       Default
         Debug "unknown attribute"
@@ -447,7 +447,6 @@ Module Leaflet
   Procedure BindItemEvent(O, Callback, EventType.q = #PB_All)
     
     If EventType = #PB_All
-      
       
       EventType =	 #EventType_AutopanStart |
                  	 #EventType_BaseLayerChange |
@@ -544,16 +543,16 @@ Module Leaflet
     bme(O, "zoomend",          #EventType_ZoomEnd,          EventType, Callback)
     
     ; Interaction events
-    ; 	click 	MouseEvent	Fired when the user clicks (or taps) the map.
-    ; 	dblclick 	MouseEvent	Fired when the user double-clicks (or double-taps) the map.
+    ; 	click 	    MouseEvent	Fired when the user clicks (or taps) the map.
+    ; 	dblclick 	  MouseEvent	Fired when the user double-clicks (or double-taps) the map.
     ; 	mousedown 	MouseEvent	Fired when the user pushes the mouse button on the map.
-    ; 	mouseup 	MouseEvent	Fired when the user releases the mouse button on the map.
+    ; 	mouseup 	  MouseEvent	Fired when the user releases the mouse button on the map.
     ; 	mouseover 	MouseEvent	Fired when the mouse enters the map.
-    ; 	mouseout 	MouseEvent	Fired when the mouse leaves the map.
+    ; 	mouseout 	  MouseEvent	Fired when the mouse leaves the map.
     ; 	mousemove 	MouseEvent	Fired while the mouse moves over the map.
     ; 	contextmenu	MouseEvent	Fired when the user pushes the right mouse button on the map, prevents default browser context menu from showing if there are listeners on this event. Also fired on mobile when the user holds a single touch for a second (also called long press).
-    ; 	keypress 	KeyboardEvent	Fired when the user presses a key from the keyboard while the map is focused.
-    ; 	preclick 	MouseEvent	Fired before mouse click on the map (sometimes useful when you want something to happen on click before any existing click handlers start running).
+    ; 	keypress 	  KeyboardEvent	Fired when the user presses a key from the keyboard while the map is focused.
+    ; 	preclick 	  MouseEvent	Fired before mouse click on the map (sometimes useful when you want something to happen on click before any existing click handlers start running).
     
     bme(O, "click",            #EventType_Click,            EventType, Callback)
     bme(O, "dblclick",         #EventType_DblClick,         EventType, Callback)

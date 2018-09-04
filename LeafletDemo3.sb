@@ -1,0 +1,81 @@
+EnableExplicit
+
+XIncludeFile "Leaflet.sbi"
+
+Enumeration
+  #Window
+  #LeafletGadget
+EndEnumeration
+
+Procedure JsonParse(String.s, ReplaceQuotes = #True)
+  If ReplaceQuotes
+    String = ReplaceString(String, "'", Chr(34))
+  EndIf
+  ! return JSON.parse(v_string);
+EndProcedure
+
+Procedure myMarkerEvent(o)
+  
+  Protected myMarker
+  
+  ! v_mymarker = v_o.target;
+  
+  Protected myNewIcon
+  
+  ! v_mynewicon = L.icon({
+  !     iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-green.png',
+  !     iconSize: [38, 95],
+  !     iconAnchor: [22, 94],
+  !     popupAnchor: [-3, -76],
+  !     shadowUrl: 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
+  !     shadowSize: [68, 95],
+  !     shadowAnchor: [22, 94]
+  ! });
+  
+  Leaflet::SetIcon(myMarker, myNewIcon)
+  
+EndProcedure
+
+Procedure Main()
+  
+  OpenWindow(#Window, #PB_Ignore, #PB_Ignore, 500, 500, "LeafletGadgetDemo", #PB_Window_ScreenCentered | #PB_Window_SizeGadget)
+  
+  ContainerGadget(#LeafletGadget, 0, 0, WindowWidth(#Window), WindowHeight(#Window)) : CloseGadgetList()
+  
+  Protected myMap = Leaflet::BindGadget(#LeafletGadget, JsonParse("{ 'center': [51.505, -0.09], 'zoom': 10 }"))
+  
+  ; create a tilelayer
+  Protected TileLayer = Leaflet::NewTileLayer(Leaflet::#TileLayerType_OpenStreetMap)
+  
+  ; add the layer to the map
+  Leaflet::AddItem(myMap, TileLayer)
+  
+  ; ------------
+  
+  Protected myLayerGroup = Leaflet::NewLayerGroup()
+  
+  ; add a layergroup to the map
+  Leaflet::AddItem(myMap, myLayerGroup)
+  
+  Protected myMarker
+  
+  ; let's add a marker...
+  
+  myMarker = Leaflet::NewMarker(Leaflet::LatLng( 51.50, -0.09 ))
+  
+  Leaflet::AddItem(myLayerGroup, myMarker)
+  
+  Leaflet::BindItemEvent(myMarker, @myMarkerEvent(), Leaflet::#EventType_Click)
+  
+  ; let's add another marker...
+  
+  myMarker = Leaflet::NewMarker(Leaflet::LatLng( 51.43, -0.09 ))
+  
+  Leaflet::AddItem(myLayerGroup, myMarker)
+  
+  Leaflet::BindItemEvent(myMarker, @myMarkerEvent(), Leaflet::#EventType_Click)
+  
+EndProcedure
+
+Leaflet::Init(@Main())
+

@@ -8,17 +8,23 @@ Enumeration
 EndEnumeration
 
 Procedure myMarkerEvent(o)
-;   Debug "myMarkerEvent"
-;   Debug EventType()
-;   Debug o
-;   Debug "---"
+  
+  Protected myMarker
+  
+  ! v_mymarker = v_o.target;
+  
+  Debug "myMarkerEvent"
+  Debug EventType()
+  Debug o
+  Debug "---"
+  
 EndProcedure
 
 Procedure myMapEvent(o)
-;   Debug "myMapEvent"
-;   Debug EventType()
-;   Debug o
-;   Debug "---"
+  ;   Debug "myMapEvent"
+  ;   Debug EventType()
+  ;   Debug o
+  ;   Debug "---"
 EndProcedure
 
 Procedure JsonParse(String.s, ReplaceQuotes = #True)
@@ -34,7 +40,7 @@ Procedure Main()
   
   ContainerGadget(#LeafletGadget, 0, 0, WindowWidth(#Window), WindowHeight(#Window)) : CloseGadgetList()
   
-  Leaflet::BindGadget(#LeafletGadget)
+  Leaflet::BindGadget(#LeafletGadget, JsonParse("{ 'zoom': 10 }"))
   
   Protected myMap = Leaflet::GetMap(#LeafletGadget)
   
@@ -49,14 +55,9 @@ Procedure Main()
   ; center to a specific position
   Leaflet::PanTo(myMap, Leaflet::LatLng( 51.505, -0.09 ) )
   
-  ; adjust the zoom
-  Leaflet::SetAttribute(myMap, Leaflet::#Zoom, 10)
-  
   ; ------------
   
-  Define myLayerGroup
-  
-  myLayerGroup = Leaflet::NewLayerGroup()
+  Protected myLayerGroup = Leaflet::NewLayerGroup()
   
   ; add a layergroup to the map
   Leaflet::AddItem(myMap, myLayerGroup)
