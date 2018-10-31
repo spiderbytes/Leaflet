@@ -1,0 +1,123 @@
+EnableExplicit
+
+XIncludeFile "Leaflet.sbi"
+
+Enumeration
+  #Window
+  #Button_Paris
+  #Button_London
+  #Button_Berlin
+  #LeafletGadget
+EndEnumeration
+
+Global myMap
+
+Global NewMap myMarkers()
+
+Procedure JsonParse(String.s, ReplaceQuotes = #True)
+  If ReplaceQuotes
+    String = ReplaceString(String, "'", Chr(34))
+  EndIf
+  ! return JSON.parse(v_string);
+EndProcedure
+
+Procedure ButtonEvent()
+  
+  Protected Add = #False
+  Protected myMarker
+  
+  If FindString(GetGadgetText(EventGadget()), "Add")
+    Add = #True
+  EndIf
+  
+  Select EventGadget()
+      
+    Case #Button_Paris
+      
+      If Add
+          
+        myMarker = Leaflet::NewMarker(Leaflet::LatLng( 48.856613, 2.352222 ))
+        Leaflet::AddItem(myMap, myMarker)
+        myMarkers("Paris") = myMarker
+        
+      Else
+        
+        myMarker = myMarkers("Paris")
+        Leaflet::RemoveLayer(myMap, myMarker)
+        
+      EndIf
+      
+    Case #Button_London
+      
+      If Add
+          
+        myMarker = Leaflet::NewMarker(Leaflet::LatLng( 51.507351, -0.127758 ))
+        Leaflet::AddItem(myMap, myMarker)
+        myMarkers("London") = myMarker
+        
+      Else
+        
+        myMarker = myMarkers("London")
+        Leaflet::RemoveLayer(myMap, myMarker)
+        
+      EndIf
+      
+    Case #Button_Berlin
+      
+      If Add
+          
+        myMarker = Leaflet::NewMarker(Leaflet::LatLng( 52.520008, 13.404954 ))
+        Leaflet::AddItem(myMap, myMarker)
+        myMarkers("Berlin") = myMarker
+        
+      Else
+        
+        myMarker = myMarkers("Berlin")
+        Leaflet::RemoveLayer(myMap, myMarker)
+        
+      EndIf
+      
+  EndSelect
+  
+  If Add = #True
+    SetGadgetText(EventGadget(), ReplaceString(GetGadgetText(EventGadget()), "Add", "Remove"))
+  Else
+    SetGadgetText(EventGadget(), ReplaceString(GetGadgetText(EventGadget()), "Remove", "Add"))
+  EndIf
+  
+EndProcedure
+
+Procedure Main()
+  
+  OpenWindow(#Window, #PB_Ignore, #PB_Ignore, 800, 600, "LeafletGadgetDemo", #PB_Window_ScreenCentered | #PB_Window_SizeGadget)
+  
+  ButtonGadget(#Button_Paris,  10, 10, 170, 30, "Add Paris-Marker") 
+  ButtonGadget(#Button_London, 10, 50, 170, 30, "Add London-Marker") 
+  ButtonGadget(#Button_Berlin, 10, 90, 170, 30, "Add Berlin-Marker") 
+  
+  BindGadgetEvent(#Button_Paris,  @ButtonEvent())
+  BindGadgetEvent(#Button_London, @ButtonEvent())
+  BindGadgetEvent(#Button_Berlin, @ButtonEvent())
+  
+  ContainerGadget(#LeafletGadget, 190, 10, WindowWidth(#Window) - 190 - 10, 580, #PB_Container_Flat) : CloseGadgetList()
+  
+  Leaflet::BindGadget(#LeafletGadget, JsonParse("{ 'center': [50.703416,6.634032], 'zoom': 5 }")) ; coordinates of Europe
+  
+  myMap = Leaflet::GetMap(#LeafletGadget)
+  
+  ; add an OpenStreetMap-Tilelayer to the map
+  Leaflet::AddItem(myMap, Leaflet::NewTileLayer(Leaflet::#TileLayerType_OpenStreetMap))
+    
+EndProcedure
+
+Leaflet::Init(@Main())
+
+
+; IDE Options = SpiderBasic 2.20 (Windows - x86)
+; CursorPosition = 40
+; FirstLine = 56
+; Folding = -
+; iOSAppOrientation = 0
+; AndroidAppOrientation = 0
+; EnableXP
+; CompileSourceDirectory

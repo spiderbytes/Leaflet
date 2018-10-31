@@ -79,3 +79,11 @@ EndProcedure
 
 Leaflet::Init(@Main())
 
+
+; IDE Options = SpiderBasic 2.20 (Windows - x86)
+; CursorPosition = 33
+; Folding = -
+; iOSAppOrientation = 0
+; AndroidAppOrientation = 0
+; EnableXP
+; CompileSourceDirectory

@@ -170,6 +170,7 @@ DeclareModule Leaflet
   
   Declare AddItem(O1, O2)
   Declare ClearLayers(LayerGroup)
+  Declare RemoveLayer(LayerGroup, Layer)
   
 EndDeclareModule
 
@@ -781,3 +782,11 @@ Module Leaflet
   EndProcedure
   
 EndModule
+; IDE Options = SpiderBasic 2.20 (Windows - x86)
+; CursorPosition = 693
+; FirstLine = 566
+; Folding = 6----f+-
+; iOSAppOrientation = 0
+; AndroidAppOrientation = 0
+; EnableXP
+; CompileSourceDirectory
