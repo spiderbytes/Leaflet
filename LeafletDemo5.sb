@@ -1,0 +1,79 @@
+EnableExplicit
+
+XIncludeFile "Leaflet.sbi"
+
+Enumeration
+  #Window
+  #LeafletGadget
+EndEnumeration
+
+Procedure JsonParse(String.s, ReplaceQuotes = #True)
+  If ReplaceQuotes
+    String = ReplaceString(String, "'", Chr(34))
+  EndIf
+  ! return JSON.parse(v_string);
+EndProcedure
+
+Procedure GetRandomLatLng(myMap)
+  
+  !	var bounds = v_mymap.getBounds(),
+  !		southWest = bounds.getSouthWest(),
+  !		northEast = bounds.getNorthEast(),
+  !		lngSpan = northEast.lng - southWest.lng,
+  !		latSpan = northEast.lat - southWest.lat;
+  !
+  !	return L.latLng(
+  !			southWest.lat + latSpan * Math.random(),
+  !			southWest.lng + lngSpan * Math.random());
+  
+EndProcedure
+
+Procedure Populate(myMap, myMarkerClusterGroup)
+  
+  ; populate the Map wtih random markers
+  
+  Protected Counter
+  Protected myMarker
+  
+  For Counter = 0 To 100
+    
+    myMarker = Leaflet::NewMarker(GetRandomLatLng(myMap))
+    
+    Leaflet::SetStringAttribute(myMarker, Leaflet::#Title, "Random Marker: " + Str(Counter))
+    Leaflet::SetStringAttribute(myMarker, Leaflet::#Tooltip, "Random Marker: " + Str(Counter))
+    
+    Leaflet::AddItem(myMarkerClusterGroup, myMarker)
+    
+  Next
+    
+EndProcedure
+
+Procedure Main()
+  
+  OpenWindow(#Window, #PB_Ignore, #PB_Ignore, 800, 600, "LeafletGadgetDemo", #PB_Window_ScreenCentered | #PB_Window_SizeGadget)
+  
+  ContainerGadget(#LeafletGadget, 10, 10, WindowWidth(#Window) - 20, 580, #PB_Container_Flat) : CloseGadgetList()
+  
+  Leaflet::BindGadget(#LeafletGadget, JsonParse("{ 'center': [50.703416,6.634032], 'zoom': 5 }"))
+  
+  Protected myMap = Leaflet::GetMap(#LeafletGadget)
+  
+  ; add an OpenStreetMap-Tilelayer to the map
+  Leaflet::AddItem(myMap, Leaflet::NewTileLayer(Leaflet::#TileLayerType_OpenStreetMap))
+    
+  ; create a MarkerClusterGroup
+  Protected myMarkerClusterGroup = Leaflet::NewMarkerClusterGroup()
+  
+  ; set the cluster-radius
+  Leaflet::SetMaxClusterRadius(myMarkerClusterGroup, 100)
+ 
+  ; ... populate it with random markers
+  Populate(myMap, myMarkerClusterGroup)
+  
+  ; ... and add it to the map:
+  Leaflet::AddItem(myMap, myMarkerClusterGroup)
+  
+EndProcedure
+
+Leaflet::Init(@Main())
+
