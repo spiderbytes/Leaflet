@@ -35,7 +35,7 @@ Procedure ButtonEvent()
     Case #Button_Paris
       
       If Add
-          
+        
         myMarker = Leaflet::NewMarker(Leaflet::LatLng( 48.856613, 2.352222 ))
         Leaflet::AddItem(myMap, myMarker)
         myMarkers("Paris") = myMarker
@@ -50,7 +50,7 @@ Procedure ButtonEvent()
     Case #Button_London
       
       If Add
-          
+        
         myMarker = Leaflet::NewMarker(Leaflet::LatLng( 51.507351, -0.127758 ))
         Leaflet::AddItem(myMap, myMarker)
         myMarkers("London") = myMarker
@@ -65,7 +65,7 @@ Procedure ButtonEvent()
     Case #Button_Berlin
       
       If Add
-          
+        
         myMarker = Leaflet::NewMarker(Leaflet::LatLng( 52.520008, 13.404954 ))
         Leaflet::AddItem(myMap, myMarker)
         myMarkers("Berlin") = myMarker
@@ -107,17 +107,8 @@ Procedure Main()
   
   ; add an OpenStreetMap-Tilelayer to the map
   Leaflet::AddItem(myMap, Leaflet::NewTileLayer(Leaflet::#TileLayerType_OpenStreetMap))
-    
+  
 EndProcedure
 
 Leaflet::Init(@Main())
 
-
-; IDE Options = SpiderBasic 2.20 (Windows - x86)
-; CursorPosition = 40
-; FirstLine = 56
-; Folding = -
-; iOSAppOrientation = 0
-; AndroidAppOrientation = 0
-; EnableXP
-; CompileSourceDirectory

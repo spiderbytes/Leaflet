@@ -131,7 +131,7 @@ DeclareModule Leaflet
   Declare NewMarker      (LatLng       = #PB_Ignore, Options = #PB_Ignore)
   
   ; Vector Layers
-    
+  
   Declare NewPolyline    (LatLngs      = #PB_Ignore, Options = #PB_Ignore)
   Declare NewPolygon     (LatLngs      = #PB_Ignore, Options = #PB_Ignore)
   Declare NewRectangle   (LatLngBounds = #PB_Ignore, Options = #PB_Ignore)
@@ -143,7 +143,7 @@ DeclareModule Leaflet
   Declare NewImageOverlay()
   
   ;  
-    
+  
   Declare BindItemEvent(O, Callback, EventType.q = #PB_All)
   
   Declare SetAttribute(Gadget, Attribute, Value.d)
@@ -231,7 +231,7 @@ Module Leaflet
     EndIf
     
   EndProcedure
- 
+  
   Procedure RedrawMap(Gadget)
     ! var map = $(dijit.byId(spider_GadgetID(v_gadget).gadget.id)).data("map");
     ! map.invalidateSize();
@@ -314,7 +314,7 @@ Module Leaflet
         
       Case #Radius
         ! v_o.setRadius(v_value);
-                
+        
       Case #Stroke 
         ! v_o.setStyle( { stroke : v_value } );
         
@@ -368,7 +368,7 @@ Module Leaflet
     ! } catch (v_ex) {
     Debug Ex
     ! }
-        
+    
   EndProcedure
   
   Procedure GetAttribute(O, Attribute)
@@ -395,7 +395,7 @@ Module Leaflet
   EndProcedure
   
   ; Methods
-    
+  
   Procedure SetIcon(O, P1)
     ! v_o.setIcon(v_p1);    
   EndProcedure
@@ -754,7 +754,7 @@ Module Leaflet
   Procedure NewImageOverlay()
     ! return L.imageOverlay();
   EndProcedure
-    
+  
   Procedure NewIcon(Options = #PB_Ignore)
     ; L.icon(<Icon options> options)
     If Options = #PB_Ignore
@@ -782,11 +782,3 @@ Module Leaflet
   EndProcedure
   
 EndModule
-; IDE Options = SpiderBasic 2.20 (Windows - x86)
-; CursorPosition = 693
-; FirstLine = 566
-; Folding = 6----f+-
-; iOSAppOrientation = 0
-; AndroidAppOrientation = 0
-; EnableXP
-; CompileSourceDirectory
