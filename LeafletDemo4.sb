@@ -43,7 +43,7 @@ Procedure ButtonEvent()
       Else
         
         myMarker = myMarkers("Paris")
-        Leaflet::RemoveLayer(myMap, myMarker)
+        Leaflet::RemoveMarker(myMap, myMarker)
         
       EndIf
       
@@ -58,7 +58,7 @@ Procedure ButtonEvent()
       Else
         
         myMarker = myMarkers("London")
-        Leaflet::RemoveLayer(myMap, myMarker)
+        Leaflet::RemoveMarker(myMap, myMarker)
         
       EndIf
       
@@ -73,7 +73,7 @@ Procedure ButtonEvent()
       Else
         
         myMarker = myMarkers("Berlin")
-        Leaflet::RemoveLayer(myMap, myMarker)
+        Leaflet::RemoveMarker(myMap, myMarker)
         
       EndIf
       

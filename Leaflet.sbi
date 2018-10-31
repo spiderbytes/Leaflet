@@ -171,6 +171,7 @@ DeclareModule Leaflet
   Declare AddItem(O1, O2)
   Declare ClearLayers(LayerGroup)
   Declare RemoveLayer(LayerGroup, Layer)
+  Declare RemoveMarker(LayerGroup, Marker)
   
 EndDeclareModule
 
@@ -767,6 +768,10 @@ Module Leaflet
   
   Procedure RemoveLayer(LayerGroup, Layer)
     ! v_layergroup.removeLayer(v_layer);
+  EndProcedure
+  
+  Procedure RemoveMarker(LayerGroup, Marker) ; same as RemoveLayer, but more intuitive procedurename
+    ! v_layergroup.removeLayer(v_marker);
   EndProcedure
   
   Procedure HasLayer(LayerGroup, Layer)
