@@ -36,9 +36,17 @@ Procedure myMarkerEvent(o)
   
 EndProcedure
 
+Procedure SizeWindowEvent()
+  
+  ResizeGadget(#LeafletGadget, #PB_Ignore, #PB_Ignore, WindowWidth(#Window), WindowHeight(#Window))
+  
+EndProcedure
+
 Procedure Main()
   
   OpenWindow(#Window, #PB_Ignore, #PB_Ignore, 500, 500, "LeafletGadgetDemo", #PB_Window_ScreenCentered | #PB_Window_SizeGadget)
+  
+  BindEvent(#PB_Event_SizeWindow, @SizeWindowEvent(), #Window)
   
   ContainerGadget(#LeafletGadget, 0, 0, WindowWidth(#Window), WindowHeight(#Window)) : CloseGadgetList()
   

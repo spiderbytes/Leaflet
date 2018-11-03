@@ -21,6 +21,12 @@ Procedure JsonParse(String.s, ReplaceQuotes = #True)
   ! return JSON.parse(v_string);
 EndProcedure
 
+Procedure SizeWindowEvent()
+  
+  ResizeGadget(#LeafletGadget, #PB_Ignore, #PB_Ignore, WindowWidth(#Window) - 200, WindowHeight(#Window) - 20)
+  
+EndProcedure
+
 Procedure ButtonEvent()
   
   Protected Add = #False
@@ -91,6 +97,8 @@ Procedure Main()
   
   OpenWindow(#Window, #PB_Ignore, #PB_Ignore, 800, 600, "LeafletGadgetDemo", #PB_Window_ScreenCentered | #PB_Window_SizeGadget)
   
+  BindEvent(#PB_Event_SizeWindow, @SizeWindowEvent(), #Window)
+  
   ButtonGadget(#Button_Paris,  10, 10, 170, 30, "Add Paris-Marker") 
   ButtonGadget(#Button_London, 10, 50, 170, 30, "Add London-Marker") 
   ButtonGadget(#Button_Berlin, 10, 90, 170, 30, "Add Berlin-Marker") 
@@ -99,7 +107,7 @@ Procedure Main()
   BindGadgetEvent(#Button_London, @ButtonEvent())
   BindGadgetEvent(#Button_Berlin, @ButtonEvent())
   
-  ContainerGadget(#LeafletGadget, 190, 10, WindowWidth(#Window) - 190 - 10, 580, #PB_Container_Flat) : CloseGadgetList()
+  ContainerGadget(#LeafletGadget, 190, 10, WindowWidth(#Window) - 200, WindowHeight(#Window) - 20, #PB_Container_Flat) : CloseGadgetList()
   
   Leaflet::BindGadget(#LeafletGadget, JsonParse("{ 'center': [50.703416,6.634032], 'zoom': 5 }")) ; coordinates of Europe
   

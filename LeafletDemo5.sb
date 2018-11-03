@@ -10,7 +10,6 @@ EndEnumeration
 
 Global NewMap Marker()
 Global myMap
-Global ZoomedIn = #False
 Global RandomMarkerNumber = 50
 
 Procedure JsonParse(String.s, ReplaceQuotes = #True)
@@ -56,7 +55,15 @@ Procedure Populate(myMap, myMarkerClusterGroup)
   
 EndProcedure
 
+Procedure SizeWindowEvent()
+  
+  ResizeGadget(#LeafletGadget, #PB_Ignore, #PB_Ignore, WindowWidth(#Window) - 180, WindowHeight(#Window) - 20)
+  
+EndProcedure
+
 Procedure ButtonEvent()
+  
+  Static ZoomedIn
   
   Protected myMarker
   Protected LatLng
@@ -88,11 +95,13 @@ Procedure Main()
   
   OpenWindow(#Window, #PB_Ignore, #PB_Ignore, 800, 600, "LeafletGadgetDemo", #PB_Window_ScreenCentered | #PB_Window_SizeGadget)
   
+  BindEvent(#PB_Event_SizeWindow, @SizeWindowEvent(), #Window)
+  
   ButtonGadget(#Button, 10, 10, 150, 30, "Zoom to Marker " + Str(RandomMarkerNumber))
   
   BindGadgetEvent(#Button, @ButtonEvent())
   
-  ContainerGadget(#LeafletGadget, 170, 10, WindowWidth(#Window) - 20 - 160, 580, #PB_Container_Flat) : CloseGadgetList()
+  ContainerGadget(#LeafletGadget, 170, 10, WindowWidth(#Window) - 180, WindowHeight(#Window) - 20, #PB_Container_Flat) : CloseGadgetList()
   
   Leaflet::BindGadget(#LeafletGadget, JsonParse("{ 'center': [50.703416, 6.634032], 'zoom': 5 }"))
   
