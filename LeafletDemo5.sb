@@ -4,8 +4,14 @@ XIncludeFile "Leaflet.sbi"
 
 Enumeration
   #Window
+  #Button
   #LeafletGadget
 EndEnumeration
+
+Global NewMap Marker()
+Global myMap
+Global ZoomedIn = #False
+Global RandomMarkerNumber = 50
 
 Procedure JsonParse(String.s, ReplaceQuotes = #True)
   If ReplaceQuotes
@@ -44,29 +50,63 @@ Procedure Populate(myMap, myMarkerClusterGroup)
     
     Leaflet::AddItem(myMarkerClusterGroup, myMarker)
     
-  Next
+    Marker("M" + Str(Counter)) = myMarker
     
+  Next
+  
+EndProcedure
+
+Procedure ButtonEvent()
+  
+  Protected myMarker
+  Protected LatLng
+  
+  If ZoomedIn
+    
+    RandomMarkerNumber = Random(0, 100)
+    
+    SetGadgetText(#Button, "Zoom to Marker " + Str(RandomMarkerNumber))
+    
+    LatLng = Leaflet::LatLng(50.703416, 6.634032)
+    Leaflet::SetView(myMap, LatLng, 5)
+    ZoomedIn = #False
+    
+  Else
+    
+    SetGadgetText(#Button, "Zoom out")
+    
+    myMarker = Marker("M"+ Str(RandomMarkerNumber))
+    LatLng = Leaflet::GetAttribute(myMarker, Leaflet::#LatLng)
+    Leaflet::SetView(myMap, LatLng, 8)
+    ZoomedIn = #True
+    
+  EndIf
+  
 EndProcedure
 
 Procedure Main()
   
   OpenWindow(#Window, #PB_Ignore, #PB_Ignore, 800, 600, "LeafletGadgetDemo", #PB_Window_ScreenCentered | #PB_Window_SizeGadget)
   
-  ContainerGadget(#LeafletGadget, 10, 10, WindowWidth(#Window) - 20, 580, #PB_Container_Flat) : CloseGadgetList()
+  ButtonGadget(#Button, 10, 10, 150, 30, "Zoom to Marker " + Str(RandomMarkerNumber))
   
-  Leaflet::BindGadget(#LeafletGadget, JsonParse("{ 'center': [50.703416,6.634032], 'zoom': 5 }"))
+  BindGadgetEvent(#Button, @ButtonEvent())
   
-  Protected myMap = Leaflet::GetMap(#LeafletGadget)
+  ContainerGadget(#LeafletGadget, 170, 10, WindowWidth(#Window) - 20 - 160, 580, #PB_Container_Flat) : CloseGadgetList()
+  
+  Leaflet::BindGadget(#LeafletGadget, JsonParse("{ 'center': [50.703416, 6.634032], 'zoom': 5 }"))
+  
+  myMap = Leaflet::GetMap(#LeafletGadget)
   
   ; add an OpenStreetMap-Tilelayer to the map
   Leaflet::AddItem(myMap, Leaflet::NewTileLayer(Leaflet::#TileLayerType_OpenStreetMap))
-    
+  
   ; create a MarkerClusterGroup
   Protected myMarkerClusterGroup = Leaflet::NewMarkerClusterGroup()
   
   ; set the cluster-radius
   Leaflet::SetMaxClusterRadius(myMarkerClusterGroup, 100)
- 
+  
   ; ... populate it with random markers
   Populate(myMap, myMarkerClusterGroup)
   
