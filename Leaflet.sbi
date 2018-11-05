@@ -131,6 +131,7 @@ DeclareModule Leaflet
   Declare NewGeoJSON()
   
   Declare NewIcon        (Options      = #PB_Ignore)
+  Declare NewDivIcon     (Options      = #PB_Ignore)
   Declare NewMarker      (LatLng       = #PB_Ignore, Options = #PB_Ignore)
   
   ; Vector Layers
@@ -180,8 +181,9 @@ DeclareModule Leaflet
   
   ; Cluster
   
-  Declare NewMarkerClusterGroup()
+  Declare NewMarkerClusterGroup(IconCreateCallback = #PB_Ignore, SpiderfyShapePositions = #PB_Ignore)
   Declare SetMaxClusterRadius(Cluster, Radius)  
+  Declare ClusterGetChildCount(Cluster)  
   
 EndDeclareModule
 
@@ -794,6 +796,14 @@ Module Leaflet
     !	return L.icon( v_options );
   EndProcedure
   
+  Procedure NewDivIcon(Options = #PB_Ignore)
+    ; L.icon(<Icon options> options)
+    If Options = #PB_Ignore
+      ! v_options = { };
+    EndIf
+    !	return L.divIcon( v_options );
+  EndProcedure  
+  
   ; ---
   
   Procedure RemoveLayer(LayerGroup, Layer)
@@ -818,14 +828,32 @@ Module Leaflet
   
   ; Cluster
   
-  Procedure NewMarkerClusterGroup()
-    ! return L.markerClusterGroup({});
+  Procedure NewMarkerClusterGroup(IconCreateCallback = #PB_Ignore, SpiderfyShapePositions = #PB_Ignore)
+    
+    If IconCreateCallback = #PB_Ignore
+      ! v_iconcreatecallback = null
+    EndIf
+    
+    ! return L.markerClusterGroup({
+    !   iconCreateFunction: v_iconcreatecallback,
+    ! });
+    
+;     ! return L.markerClusterGroup({
+;     !   iconCreateFunction: function(cluster) {
+;     !     
+;     !   }    
+;     ! });
+    
   EndProcedure
   
   Procedure SetMaxClusterRadius(Cluster, Radius)
     ! var o = v_cluster.options;
     ! o.maxClusterRadius = v_radius;
     ! v_cluster.options = o;
+  EndProcedure  
+  
+  Procedure ClusterGetChildCount(Cluster)
+    ! return v_cluster.getChildCount();
   EndProcedure  
   
 EndModule

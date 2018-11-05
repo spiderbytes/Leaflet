@@ -8,6 +8,7 @@ Enumeration
   #LeafletGadget
 EndEnumeration
 
+
 Global NewMap Marker()
 Global myMap
 Global RandomMarkerNumber = 50
@@ -91,6 +92,80 @@ Procedure ButtonEvent()
   
 EndProcedure
 
+Procedure CreateIcon(IconText.s)
+  Protected IconSize = 32
+  Protected I
+  Protected ReturnValue
+  I = CreateImage(#PB_Any, IconSize, IconSize)
+  StartDrawing(ImageOutput(I))
+  Box(0, 0, IconSize, IconSize, #Black)
+  Box(1, 1, IconSize - 2, IconSize - 2, #White)
+  DrawText((IconSize/2)-(TextWidth(IconText)/2), (IconSize/2)-(TextHeight(IconText)/2), IconText)
+  StopDrawing() 
+  ! v_returnvalue = spider_ImageID(v_i).toDataURL();
+  FreeImage(I)
+  ProcedureReturn ReturnValue
+EndProcedure
+
+Procedure AddDivIconStyles()
+  
+  Static AlreadyAdded
+  
+  If AlreadyAdded = #False ; add only one time
+    
+    AlreadyAdded = #True
+    
+    ! $("<style type='text/css'> .centeredText { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -85%); color: red; background: white; width: 14px} </style>").appendTo("head");
+    ! $("<style type='text/css'> .myDivIcon { width:25px !important; height:41px !important; border: 0; text-align: center; } </style>").appendTo("head");
+    
+  EndIf 
+  
+EndProcedure
+
+Procedure IconCreateCallback(Cluster)
+  
+  Protected ChildCount
+  
+  ChildCount = Leaflet::ClusterGetChildCount(Cluster)
+  
+  If #False
+    
+    AddDivIconStyles()
+    
+    ; Option 1: Using Leaflet::NewDivIcon()
+    
+    Protected Options
+    
+    ! v_options = {
+    !   html: '<div class="container"><img src="https://unpkg.com/leaflet@1.3.4/dist/images/marker-icon.png"><div class="centeredText">' + v_childcount + '</div></div>',
+    !   className: 'myDivIcon'
+    ! }
+    
+    Protected myDivIcon = Leaflet::NewDivIcon(Options)
+    
+    ProcedureReturn myDivIcon
+        
+  Else
+    
+    ; Option 2: Using Leaflet::NewIcon() with selfdrawn Icons
+    
+    Protected CreatedIcon = CreateIcon(Str(ChildCount))
+    
+    Protected myIcon
+    
+    ! v_myicon = L.icon({
+    !     iconUrl: v_createdicon,
+    !     iconSize: [32, 32],
+    !     iconAnchor: [16, 16],
+    !     popupAnchor: [16, 16]
+    ! });
+        
+    ProcedureReturn myIcon
+    
+  EndIf
+  
+EndProcedure
+
 Procedure Main()
   
   OpenWindow(#Window, #PB_Ignore, #PB_Ignore, 800, 600, "LeafletGadgetDemo", #PB_Window_ScreenCentered | #PB_Window_SizeGadget)
@@ -111,7 +186,7 @@ Procedure Main()
   Leaflet::AddItem(myMap, Leaflet::NewTileLayer(Leaflet::#TileLayerType_OpenStreetMap))
   
   ; create a MarkerClusterGroup
-  Protected myMarkerClusterGroup = Leaflet::NewMarkerClusterGroup()
+  Protected myMarkerClusterGroup = Leaflet::NewMarkerClusterGroup(@IconCreateCallback())
   
   ; set the cluster-radius
   Leaflet::SetMaxClusterRadius(myMarkerClusterGroup, 100)
