@@ -1,0 +1,52 @@
+EnableExplicit
+
+XIncludeFile "Leaflet.sbi"
+
+Enumeration
+  #Window
+  #LeafletGadget
+  #TrackBarGadget  
+EndEnumeration
+
+Global myMap
+
+Procedure JsonParse(String.s, ReplaceQuotes = #True)
+  If ReplaceQuotes
+    String = ReplaceString(String, "'", Chr(34))
+  EndIf
+  ! return JSON.parse(v_string);
+EndProcedure
+
+Procedure TrackBarGadgetEvent()
+  
+  Leaflet::SetAttribute(myMap, Leaflet::#Bearing, GetGadgetState(#TrackBarGadget))
+  
+EndProcedure
+
+Procedure Main()
+  
+  OpenWindow(#Window, #PB_Ignore, #PB_Ignore, 500, 500, "LeafletGadgetDemo", #PB_Window_ScreenCentered | #PB_Window_SizeGadget)
+  
+  ContainerGadget(#LeafletGadget, 0, 0, WindowWidth(#Window), WindowHeight(#Window) - 60) : CloseGadgetList()
+  
+  TrackBarGadget(#TrackBarGadget, 10, WindowHeight(#Window) - 40, WindowWidth(#Window) - 20, 20, 0, 360)
+  
+  BindGadgetEvent(#TrackBarGadget, @TrackBarGadgetEvent())
+  
+  Leaflet::BindGadget(#LeafletGadget, JsonParse("{ 'zoom': 10, 'rotate': true, 'touchRotate': true }"))
+  
+  myMap = Leaflet::GetMap(#LeafletGadget)
+  
+  ; create a tilelayer
+  Protected TileLayer = Leaflet::NewTileLayer(Leaflet::#TileLayerType_OpenStreetMap)
+  
+  ; add the layer to the map
+  Leaflet::AddItem(myMap, TileLayer)
+  
+  ; center to a specific position
+  Leaflet::PanTo(myMap, Leaflet::LatLng( 51.505, -0.09 ) )
+  
+EndProcedure
+
+Leaflet::Init(@Main())
+

@@ -31,6 +31,7 @@ DeclareModule Leaflet
     #FillRule
     #Renderer
     #ClassName
+    #Bearing
     
     #Title
     
@@ -199,17 +200,19 @@ Module Leaflet
   
   Procedure Init(Callback)
     
-    ! $("<link rel='stylesheet' type='text/css'>").attr("href", "https://unpkg.com/leaflet@1.3.4/dist/leaflet.css").appendTo("head");
-    ! $("<link rel='stylesheet' type='text/css'>").attr("href", "https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css").appendTo("head");
-    ! $("<link rel='stylesheet' type='text/css'>").attr("href", "https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css").appendTo("head");
+    ! $("<link rel='stylesheet' type='text/css'>").attr("href", "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css").appendTo("head");
+    ! $("<link rel='stylesheet' type='text/css'>").attr("href", "https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css").appendTo("head");
+    ! $("<link rel='stylesheet' type='text/css'>").attr("href", "https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css").appendTo("head");
     
     
     ! $("<style type='text/css'> div.leaflet-container img { background-color: transparent !important ; padding: 0 !important ; border: 0 !important ; } </style>").appendTo("head");
     
-    ! require(["https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"], function() {
-    !   require(["https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"], function() {
+    ! require(["https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"], function() {
+    !   require(["https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster-src.js"], function() {
+    !     require(["https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate-src.js"], function() {
     IsInitialized = #True
-    !     v_callback();
+    !       v_callback();
+    !     });
     !   });
     ! });
     
@@ -380,6 +383,9 @@ Module Leaflet
         
       Case #Zoom
         ! v_o.setZoom(v_value);
+        
+      Case #Bearing
+        ! v_o.setBearing(v_value);
         
       Default
         Debug "unknown attribute"
